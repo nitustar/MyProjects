@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+
+        // {
+        //     "name": "Python Debugger: Current File",
+        //     "type": "debugpy",
+        //     "request": "launch",
+        //     "program": "${file}",
+        //     "console": "integratedTerminal"
+        // },
+
+        {
+            "name": "BlogTheData",
+            // "python": "C:/Users/nknit/AppData/Local/Programs/Python/Python312/pyhton",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "D:/Django Projects/Learning Django/mysite/manage.py",
+            "console": "integratedTerminal",
+            "args": ["runserver", "8000"],
+            "django": true,
+            "justMyCode": true,
+        }
+    ]
+}
+
