@@ -1,0 +1,11 @@
+# Ignore build output
+/dist/
+# Ignore temporary files
+*.tmp
+# Ignore .env files
+.env
+# Ignore all files starting with "config"
+config*
+# Ignore all files in the "logs" directory except for error.log
+logs/
+!logs/error.log
