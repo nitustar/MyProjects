@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
+from taggit.managers import TaggableManager
 
 # Create your models here.
 
@@ -33,6 +34,7 @@ class Post(models.Model):
         choices=Status,
         default=Status.DRAFT
     )
+    tags = TaggableManager()
 
     class Meta:
         ordering = ['-publish']
@@ -69,3 +71,5 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.name} on {self.post}.'
     
+  
+
