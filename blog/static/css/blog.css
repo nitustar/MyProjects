@@ -97,3 +97,26 @@ input[type=submit] {
     font-size:12px;
     color:#666;
 }
+
+.search-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #007BFF;
+      color: white !important;
+      text-decoration: none;
+      border-radius: 25px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+      margin: 20px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      border: 1px solid #0056b3;
+    }
+
+    .search-button:hover {
+      background-color: #0056b3;
+    }
+
+    .search-button i {
+      margin-right: 8px;
+    }
