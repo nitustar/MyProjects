@@ -1,122 +1,432 @@
-body { 
-    margin:0;
-    padding:0;
-    font-family:helvetica, sans-serif; 
-    background: rgb(234, 187, 230);
+/* =====================================================
+   1. GLOBAL RESET & BASE
+===================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-a { 
-    color:#0026ff;
-    text-decoration:none; 
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f5f7fb;
+  color: #1f2937;
+  line-height: 1.6;
 }
 
-h1 { 
-    font-weight:normal;
-    border-bottom:1px solid #0f0f79;
-    padding:0 0 10px 0;
+/* =====================================================
+   2. MAIN LAYOUT
+===================================================== */
+#content {
+  width: 68%;
+  padding: 30px;
+  float: left;
 }
 
-h2 {
-    font-weight:normal;
-    margin:30px 0 0;
+#sidebar {
+  width: 28%;
+  float: right;
+  background: #ffffff;
+  padding: 25px;
+  margin-top: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 
-#content { 
-    float:left;
-    width:60%;
-    padding:0 0 0 30px; 
+/* =====================================================
+   3. TOP NAVIGATION BAR
+===================================================== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  padding: 15px 30px;
+  color: white;
 }
 
-#sidebar { 
-    float:right;
-    width:30%;
-    padding:10px;
-    background:#ec9d9d; 
-    height:100%;
-    border-radius: 15% 0 50% 20%;
+.topbar a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-p.date { 
-    color:#e73f3f;
-    font-family: georgia, serif;
-    font-size: 12px;
-    font-style: italic; 
+.topbar a:hover {
+  text-decoration: underline;
 }
 
-.left {
-    float:left;
-    margin-right:10px;
+/* =====================================================
+   4. PAGE HEADER (TITLE + SEARCH BUTTON FIX)
+===================================================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
 }
 
-/* pagination */
-.pagination { 
-    margin:40px 0; 
-    font-weight:bold;
+.page-header h1 {
+  margin: 0;
 }
 
-/* forms */
-label { 
-    float:left;
-    clear:both;
-    color:#333;
-    margin-bottom:4px; 
-}
-input, textarea { 
-    clear:both;
-    float:left;
-    margin:0 0 10px;
-    background:#ededed;
-    border:0;
-    padding:6px 10px;
-    font-size:12px;
-}
-input[type=submit] {
-    font-weight:bold;
-    background:#00abff;
-    color:#fff;
-    padding:10px 20px;
-    font-size:14px;
-    text-transform:uppercase; 
-}
-.errorlist { 
-    color:#cc0033;
-    float:left;
-    clear:both;
-    padding-left:10px; 
+/* =====================================================
+   5. BLOG LIST / POST CARDS
+===================================================== */
+article {
+  background: #ffffff;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
 }
 
-/* comments */
+article:hover {
+  transform: translateY(-3px);
+}
+
+article h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+}
+
+article h2 a {
+  color: #111827;
+  text-decoration: none;
+}
+
+article h2 a:hover {
+  color: #4f46e5;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.summary {
+  color: #374151;
+}
+
+/* =========================
+   READ MORE BUTTON ALIGNMENT FIX
+========================= */
+article .btn-read-more {
+  display: inline-block;
+  margin-left: auto;
+}
+
+article .post-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* =====================================================
+   6. TAGS
+===================================================== */
+.tags {
+  margin-bottom: 10px;
+}
+
+.tags a {
+  display: inline-block;
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  margin-right: 5px;
+  text-decoration: none;
+}
+
+.tags a:hover {
+  background: #4f46e5;
+  color: white;
+}
+
+/* =====================================================
+   7. POST DETAIL & COMMENTS
+===================================================== */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
 .comment {
-    padding:10px;
+  background: #f9fafb;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #4f46e5;
 }
-.comment:nth-child(even) {
-    background:#efefef;
-}
+
 .comment .info {
-    font-weight:bold;
-    font-size:12px;
-    color:#666;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 6px;
 }
 
-.search-button {
-      display: inline-flex;
-      align-items: center;
-      padding: 10px 15px;
-      background-color: #007BFF;
-      color: white !important;
-      text-decoration: none;
-      border-radius: 25px;
-      font-size: 16px;
-      transition: background-color 0.3s ease;
-      margin: 20px 0;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-      border: 1px solid #0056b3;
-    }
+/* =====================================================
+   8. FORMS & CARDS
+===================================================== */
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
 
-    .search-button:hover {
-      background-color: #0056b3;
-    }
+.card {
+  width: 100%;
+  max-width: 720px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
 
-    .search-button i {
-      margin-right: 8px;
-    }
+.form-group {
+  margin-bottom: 18px;
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+
+/* =====================================================
+   9. FORM STATES & MESSAGES
+===================================================== */
+.form-title {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.success-title {
+  color: #16a34a;
+  margin-bottom: 10px;
+}
+
+.success-text {
+  color: #374151;
+  margin-bottom: 20px;
+}
+
+.message {
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+/* =====================================================
+   10. BUTTONS & LINKS
+===================================================== */
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-search {
+  background: #10b981;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.btn-search:hover {
+  background: #059669;
+}
+
+.btn-read-more {
+  background: #2563eb;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.btn-read-more:hover {
+  background: #1d4ed8;
+}
+
+.btn-share {
+  display: inline-block;
+  margin-top: 20px;
+  background: #22c55e;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-share:hover {
+  background: #16a34a;
+}
+
+/* =====================================================
+   11. DRAFT STATES
+===================================================== */
+.draft-banner {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.draft-badge {
+  background: #f59e0b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  margin-left: 10px;
+}
+
+/* =====================================================
+   12. PAGINATION
+===================================================== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 40px 0;
+}
+
+.page-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: #4f46e5;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.page-btn:hover {
+  background: #4338ca;
+}
+
+.page-btn.prev {
+  background: #6b7280;
+}
+
+.page-btn.prev:hover {
+  background: #4b5563;
+}
+
+.page-btn.next {
+  background: #10b981;
+}
+
+.page-btn.next:hover {
+  background: #059669;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* =====================================================
+   13. SEARCH PAGE
+===================================================== */
+.search-container {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.search-result {
+  background: #f9fafb;
+  padding: 18px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border-left: 4px solid #4f46e5;
+}
+
+/* =====================================================
+   14. COMMENT FORM
+===================================================== */
+form[action*="comment"] {
+  margin-top: 30px;
+}
+
+form[action*="comment"] input,
+form[action*="comment"] textarea {
+  margin-bottom: 12px;
+}
+
+form[action*="comment"] input[type="submit"] {
+  background: #4f46e5;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+form[action*="comment"] input[type="submit"]:hover {
+  background: #4338ca;
+}
+
+/* =====================================================
+   15. RESPONSIVE
+===================================================== */
+@media (max-width: 900px) {
+  #content,
+  #sidebar {
+    width: 100%;
+    float: none;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

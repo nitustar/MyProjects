@@ -2,40 +2,84 @@
 {% load blog_tags %}
 
 {% block title %}{{ posts.title }}{% endblock %}
+
 {% block content %}
+
+{% if user.is_authenticated and user == posts.author %}
+  <a href="/blog/edit/{{ posts.id }}/" class="btn-primary">
+    ✏️ Edit Post
+  </a>
+{% endif %}
+
+
+<article class="post-detail">
   <h1>{{ posts.title }}</h1>
+
   <p class="date">
-    Published {{ posts.publish }} by {{ posts.author }}
+    Published {{ posts.publish|date:"F j, Y" }} · {{ posts.author }}
   </p>
-  {{ posts.body|markdown }}
-  <p>
-    <a href="{% url 'blog:post_share' posts.id %}">
-      Share this post
+
+  <div class="tags">
+    {% for tag in posts.tags.all %}
+      <span>#{{ tag.name }}</span>
+    {% endfor %}
+  </div>
+
+  <div class="post-body">
+    {{ posts.body|markdown }}
+  </div>
+
+  <div class="post-actions">
+    <a href="{% url 'blog:post_share' posts.id %}" class="btn-share">
+      <i class="fas fa-share-alt"></i> Share
     </a>
-  </p>
-  <h2>Similar posts</h2>
-  {% for post in similar_posts %}
-    <p>
-      <a href = "{{ post.get_absolute_url }}">{{ post.title }}</a>
-    </p>
-    {% empty %}
-      There are no similar posts yet.
-  {% endfor %}
-  {% with comments.count as total_comments %}
-    <h2>
-      {{ total_comments }} comment{{ total_comments|pluralize }}
-    </h2>
-  {% endwith %}
+
+  </div>
+</article>
+
+<section class="comments-section">
+  <h2>Comments ({{ comments.count }})</h2>
+
   {% for comment in comments %}
     <div class="comment">
       <p class="info">
-        Comment {{ forloop.counter }} by {{ comment.name }}
-        {{ comment.created }}
+        {{ comment.name }} · {{ comment.created|date:"M d, Y" }}
       </p>
       {{ comment.body|linebreaks }}
     </div>
   {% empty %}
-    <p>There are no comments.</p>
+    <p>No comments yet.</p>
   {% endfor %}
+
   {% include "blog/post/includes/comment_form.html" %}
+</section>
+
+<section class="similar-posts">
+  <h3>Related Posts</h3>
+  {% for post in similar_posts %}
+    <p><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></p>
+  {% empty %}
+    <p>No related posts.</p>
+  {% endfor %}
+</section>
+
+<script>
+const token = localStorage.getItem("access_token");
+
+const publishBtn = document.getElementById("publishBtn");
+if (publishBtn) {
+  publishBtn.onclick = async () => {
+    await fetch("/blog/api/posts/{{ posts.id }}/edit/", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ status: "PB" })
+    });
+    location.reload();
+  };
+}
+</script>
+
 {% endblock %}

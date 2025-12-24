@@ -1,17 +1,38 @@
 {% extends "blog/base.html" %}
-{% block title %} Share a post {% endblock %}
+
+{% block title %}Share Post{% endblock %}
+
 {% block content %}
+<div class="container">
+  <div class="card">
+
     {% if sent %}
-        <h1> E-mail successfully sent </h1>
-        <p>
-            " {{ post.title }}" was successfully sent to {{ form.cleaned_data.to }}.
-        </p>
+      <h2 class="success-title">📩 Email Sent Successfully</h2>
+      <p class="success-text">
+        "<strong>{{ post.title }}</strong>" was sent to
+        <strong>{{ form.cleaned_data.to }}</strong>.
+      </p>
+
+      <a href="{{ post.get_absolute_url }}" class="btn-primary">
+        ← Back to Post
+      </a>
+
     {% else %}
-    <h1>Share "{{ post.title }}" by e-mail</h1>
-    <form method="post">
-      {{ form.as_p }}
-      {% csrf_token %}
-      <input type="submit" value="Send e-mail">
-    </form>
-  {% endif %}
+      <h2 class="form-title">Share This Post</h2>
+      <p class="form-subtitle">
+        Send "<strong>{{ post.title }}</strong>" via email
+      </p>
+
+      <form method="post" class="styled-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn-share">
+          <i class="fas fa-paper-plane"></i> Send Email
+        </button>
+      </form>
+    {% endif %}
+
+  </div>
+</div>
 {% endblock %}

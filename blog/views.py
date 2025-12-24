@@ -2,14 +2,25 @@ from django.http import Http404
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.core.mail import send_mail
 from .models import Post
-from .forms import EmailPostForm, CommentForm, SearchForm
+from .serializers import PostSerializer, EditPostSerializer, RegisterUserSerializer
+from .forms import EmailPostForm, CommentForm, SearchForm, PostForm
 from taggit.models import Tag
 from django.contrib.postgres.search import (SearchVector, SearchQuery, SearchRank)
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from django.utils.text import slugify
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.db.models import Q
 
 # Create your views here.
 
@@ -24,8 +35,33 @@ from django.db.models import Count
 #     template_name = 'blog/post/list.html'
 
 
+
+@login_required
+def add_post(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.slug = slugify(post.title)
+            post.save()
+            form.save_m2m()
+            return redirect(post.get_absolute_url())
+    else:
+        form = PostForm()
+
+    return render(request, 'blog/post/add_blog.html', {'form': form})
+
+
 def post_list(request, tag_slug=None):
-    post_list = Post.objects.all()
+    # post_list = Post.objects.all()
+    if request.user.is_authenticated:
+        post_list = Post.objects.filter(
+            Q(status=Post.Status.PUBLISHED) |
+            Q(author=request.user)
+        )
+    else:
+        post_list = Post.objects.filter(status=Post.Status.PUBLISHED)
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
@@ -44,29 +80,34 @@ def post_list(request, tag_slug=None):
     return render(request, 'blog/post/list.html', 
                   {'posts':posts, 'tag':tag})
 
+from django.http import HttpResponseForbidden
+
 def post_detail(request, year, month, day, post):
-    post = get_object_or_404(Post, status=Post.Status.PUBLISHED,
-                             slug=post,
-                             publish__year = year,
-                             publish__month = month,
-                             publish__day = day
+    post = get_object_or_404(
+        Post,
+        slug=post,
+        publish__year=year,
+        publish__month=month,
+        publish__day=day
     )
-    # List of active comments for this post
+
+    # 🚨 Draft protection
+    if post.status == Post.Status.DRAFT:
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden("This post is in draft")
+
+        if request.user != post.author:
+            return HttpResponseForbidden("This post is in draft")
+
     comments = post.comments.filter(active=True)
-    # Form for users to comment
     form = CommentForm()
-    # List of similar posts
-    post_tags_ids = post.tags.values_list('id', flat=True)
-    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
-    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by(
-        '-same_tags', '-publish'
-    )[:4]
-    return render(request, 'blog/post/detail.html', {
-        'posts':post,
-        'comments': comments,
-        'form': form,
-        'similar_posts': similar_posts
-        })
+
+    return render(request, "blog/post/detail.html", {
+        "posts": post,
+        "comments": comments,
+        "form": form
+    })
+
 
 def post_share(request, post_id):
     # Retrieve post by id
@@ -149,3 +190,70 @@ def post_search(request):
             'results': results
         }
     )
+
+
+class AddPostAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                author=request.user,
+                slug=slugify(serializer.validated_data['title'])
+            )
+            return Response({"message": "Post created successfully"}, status=201)
+
+        return Response(serializer.errors, status=400)
+
+
+class RegisterUserAPI(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = RegisterUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully"}, status=201)
+        return Response(serializer.errors, status=400)
+
+class EditPostAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, post_id):
+        post = get_object_or_404(Post, id=post_id)
+
+        # 🔐 Only author can update
+        if post.author != request.user:
+            return Response(
+                {"detail": "You are not allowed to edit this post"},
+                status=403
+            )
+
+        serializer = PostSerializer(
+            post,
+            data=request.data,
+            partial=True   # ✅ THIS IS CRITICAL
+        )
+
+        if serializer.is_valid():
+            updated_post = serializer.save()
+
+            # Optional: update slug if title changed
+            if "title" in request.data:
+                updated_post.slug = slugify(updated_post.title)
+                updated_post.save()
+
+            return Response({"message": "Post updated successfully"}, status=200)
+
+        return Response(serializer.errors, status=400)
+
+@login_required
+def edit_post_page(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # 🚨 Only author can edit
+    if post.author != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this post")
+
+    return render(request, "blog/post/edit_blog.html", {"post": post})

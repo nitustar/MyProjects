@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.shortcuts import render
 from django.urls import include, path
 from blog.sitemaps import PostSitemap
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 sitemaps = {
     'posts': PostSitemap,
@@ -26,11 +28,12 @@ sitemaps = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls', namespace='blog')),
-    path(
-        'sitemap.xml',
-        sitemap,
-        {'sitemaps': sitemaps},
-        name='django.contrib.sitemaps.views.sitemap'
-    )
+    path('sitemap.xml',sitemap,{'sitemaps': sitemaps},name='django.contrib.sitemaps.views.sitemap'),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    # Login page
+    path("login/", lambda request: render(request, "blog/auth/login.html"), name="login"),
+    path("register/", lambda request: render(request, "blog/auth/register.html"), name="register"),
 ]
 

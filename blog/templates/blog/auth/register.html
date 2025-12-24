@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Author Account</title>
+  <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+  <div class="card">
+    <h2>Create Author Account</h2>
+
+    <form id="registerForm">
+      <input id="username" type="text" placeholder="Username" required>
+      <input id="email" type="email" placeholder="Email" required>
+      <input id="password" type="password" placeholder="Password (min 6 chars)" required>
+
+      <button type="submit" class="btn-primary">Register</button>
+      <p id="message"></p>
+    </form>
+
+    <p style="margin-top:10px;">
+      Already have an account?
+      <a href="/login/">Login</a>
+    </p>
+  </div>
+</div>
+
+<script src="{% static 'js/register.js' %}"></script>
+
+<style>
+.container {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.card {
+  background: #fff;
+  padding: 25px;
+  width: 360px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.1);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+#message {
+  margin-top: 10px;
+}
+</style>
+</body>
+</html>

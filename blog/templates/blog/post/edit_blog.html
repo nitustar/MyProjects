@@ -1,0 +1,50 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="card">
+    <h2>Edit Blog Post</h2>
+
+    <form id="editPostForm">
+      <input type="text" id="title" value="{{ post.title }}" required>
+      <textarea id="body" rows="6">{{ post.body }}</textarea>
+
+      <select id="status">
+        <option value="DF" {% if post.status == "DF" %}selected{% endif %}>Draft</option>
+        <option value="PB" {% if post.status == "PB" %}selected{% endif %}>Publish</option>
+      </select>
+
+      <button type="submit" class="btn-primary">Update Post</button>
+      <p id="message"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+const token = localStorage.getItem("access_token");
+
+document.getElementById("editPostForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const response = await fetch("/blog/api/posts/{{ post.id }}/edit/", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      body: document.getElementById("body").value,
+      status: document.getElementById("status").value
+    })
+  });
+
+  const data = await response.json();
+  document.getElementById("message").innerText =
+    response.ok ? "Post updated successfully" : JSON.stringify(data);
+});
+
+</script>
+{% endblock %}
