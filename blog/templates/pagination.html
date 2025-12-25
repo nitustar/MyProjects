@@ -1,16 +1,18 @@
 <div class="pagination">
-  {% if page.has_previous %}
-    <a class="page-btn prev" href="?page={{ page.previous_page_number }}">
+  {% if posts.has_previous %}
+    <a class="page-btn prev"
+       href="?page={{ posts.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
       ← Previous
     </a>
   {% endif %}
 
   <span class="page-info">
-    Page {{ page.number }} of {{ page.paginator.num_pages }}
+    Page {{ posts.number }} of {{ posts.paginator.num_pages }}
   </span>
 
-  {% if page.has_next %}
-    <a class="page-btn next" href="?page={{ page.next_page_number }}">
+  {% if posts.has_next %}
+    <a class="page-btn next"
+       href="?page={{ posts.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}">
       Next →
     </a>
   {% endif %}

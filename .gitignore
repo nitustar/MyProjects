@@ -9,3 +9,4 @@ config*
 # Ignore all files in the "logs" directory except for error.log
 logs/
 !logs/error.log
+*/__pycache__/*

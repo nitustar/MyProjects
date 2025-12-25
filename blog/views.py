@@ -22,8 +22,6 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.db.models import Q
 
-# Create your views here.
-
 
 # class PostListView(ListView):
 #     """
@@ -54,6 +52,7 @@ def add_post(request):
 
 
 def post_list(request, tag_slug=None):
+    status_filter = request.GET.get("status")
     # post_list = Post.objects.all()
     if request.user.is_authenticated:
         post_list = Post.objects.filter(
@@ -62,11 +61,21 @@ def post_list(request, tag_slug=None):
         )
     else:
         post_list = Post.objects.filter(status=Post.Status.PUBLISHED)
+
+    if status_filter == "published":
+        post_list = post_list.filter(status=Post.Status.PUBLISHED)
+
+    elif status_filter == "draft":
+        post_list = post_list.filter(
+            status=Post.Status.DRAFT,
+            author=request.user
+        )
+        
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
         post_list = post_list.filter(tags__in=[tag])
-    # Pagination with 3 posts per page
+    # Pagination with 4 posts per page
     paginator = Paginator(post_list, 4)
     page_number = request.GET.get('page', 1)
     try:
@@ -78,9 +87,8 @@ def post_list(request, tag_slug=None):
         # If page_number is out of range get last page of results
         posts = paginator.page(paginator.num_pages)
     return render(request, 'blog/post/list.html', 
-                  {'posts':posts, 'tag':tag})
+                  {'posts':posts, 'tag':tag, "status_filter": status_filter})
 
-from django.http import HttpResponseForbidden
 
 def post_detail(request, year, month, day, post):
     post = get_object_or_404(
@@ -124,7 +132,7 @@ def post_share(request, post_id):
             cd = form.cleaned_data
             # ... send email
             post_url = request.build_absolute_uri(post.get_absolute_url())
-            subject = (f"{cd['name']} ({cd['email']})" f"reommends you read {post.title}")
+            subject = (f"{cd['name']} ({cd['email']})" f" recommends you read {post.title}")
             message = (
                 f"Read {post.title} at {post_url}\n\n"
                 f"{cd['name']} \'s comments: {cd['comments']}"

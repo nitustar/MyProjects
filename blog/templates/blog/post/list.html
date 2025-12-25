@@ -20,6 +20,26 @@
   </p>
 {% endif %}
 
+<div class="filter-bar">
+  <a href="{% url 'blog:post_list' %}"
+     class="filter-btn {% if not status_filter %}active{% endif %}">
+    All
+  </a>
+
+  <a href="?status=published"
+     class="filter-btn {% if status_filter == 'published' %}active{% endif %}">
+    Published
+  </a>
+
+  {% if user.is_authenticated %}
+    <a href="?status=draft"
+       class="filter-btn {% if status_filter == 'draft' %}active{% endif %}">
+      Draft
+    </a>
+  {% endif %}
+</div>
+
+
 {% for post in posts %}
   <article class="post-card">
     <h2>

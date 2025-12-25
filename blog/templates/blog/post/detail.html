@@ -5,12 +5,19 @@
 
 {% block content %}
 
-{% if user.is_authenticated and user == posts.author %}
-  <a href="/blog/edit/{{ posts.id }}/" class="btn-primary">
-    ✏️ Edit Post
-  </a>
+{% if posts.status == 'DF' %}
+  <span class="draft-badge">Draft</span>
+{% elif posts.status == 'PB' %}
+  <span class="publish-badge">Published</span>
 {% endif %}
 
+{% if user.is_authenticated and user == posts.author %}
+  {% if posts.status == 'DF' %}
+    <a href="/blog/edit/{{ posts.id }}/" class="btn-primary">
+      ✏️ Edit Draft
+    </a>
+  {% endif%}
+{% endif %}
 
 <article class="post-detail">
   <h1>{{ posts.title }}</h1>
@@ -45,7 +52,7 @@
       <p class="info">
         {{ comment.name }} · {{ comment.created|date:"M d, Y" }}
       </p>
-      {{ comment.body|linebreaks }}
+      {{ comment.comment|linebreaks }}
     </div>
   {% empty %}
     <p>No comments yet.</p>

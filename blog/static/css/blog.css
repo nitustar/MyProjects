@@ -168,6 +168,26 @@ h1 {
   margin-bottom: 6px;
 }
 
+/* =========================
+   CODE BLOCK WRAP FIX
+========================= */
+.post-body pre {
+  max-width: 100%;
+  overflow-x: auto;          /* fallback */
+  white-space: pre-wrap;     /* allow wrapping */
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.post-body pre code {
+  display: block;
+  max-width: 100%;
+  white-space: pre-wrap;     /* CRITICAL */
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+
 /* =====================================================
    8. FORMS & CARDS
 ===================================================== */
@@ -325,6 +345,15 @@ select:focus {
   margin-left: 10px;
 }
 
+.publish-badge {
+  background: #0b8d32;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  margin-left: 10px;
+}
+
 /* =====================================================
    12. PAGINATION
 ===================================================== */
@@ -429,4 +458,32 @@ form[action*="comment"] input[type="submit"]:hover {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* =========================
+   STATUS FILTER BUTTONS
+========================= */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #374151;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.filter-btn:hover {
+  background: #d1d5db;
+}
+
+.filter-btn.active {
+  background: #4f46e5;
+  color: white;
 }
