@@ -99,7 +99,7 @@ def post_detail(request, year, month, day, post):
         publish__day=day
     )
 
-    # 🚨 Draft protection
+    # Draft protection
     if post.status == Post.Status.DRAFT:
         if not request.user.is_authenticated:
             return HttpResponseForbidden("This post is in draft")
@@ -231,7 +231,7 @@ class EditPostAPI(APIView):
     def put(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
 
-        # 🔐 Only author can update
+        # Only author can update
         if post.author != request.user:
             return Response(
                 {"detail": "You are not allowed to edit this post"},
@@ -247,7 +247,7 @@ class EditPostAPI(APIView):
         if serializer.is_valid():
             updated_post = serializer.save()
 
-            # Optional: update slug if title changed
+            # update slug if title changed
             if "title" in request.data:
                 updated_post.slug = slugify(updated_post.title)
                 updated_post.save()
@@ -260,7 +260,7 @@ class EditPostAPI(APIView):
 def edit_post_page(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
-    # 🚨 Only author can edit
+    # Only author can edit
     if post.author != request.user:
         return HttpResponseForbidden("You are not allowed to edit this post")
 
